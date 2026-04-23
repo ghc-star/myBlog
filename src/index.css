@@ -1,0 +1,54 @@
+@import "tailwindcss";
+html,
+body,
+#root {
+  height: 100%;
+  cursor:
+    url("./assets/cursor.ico") 12 12,
+    auto;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f8fafc;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+ul {
+  style-list: none;
+}
+#particles-js {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#particles-js canvas {
+  display: block;
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
