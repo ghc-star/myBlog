@@ -15,9 +15,9 @@ function slugify(text: string) {
 }
 
 const headingClasses = {
-  1: "mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-gray-900",
-  2: "mb-4 mt-8 scroll-mt-24 border-b border-gray-200 pb-2 text-2xl font-semibold leading-tight text-gray-900",
-  3: "mb-3 mt-6 scroll-mt-24 text-xl font-semibold leading-snug text-gray-900",
+  1: "mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-[var(--text-title)]",
+  2: "mb-4 mt-8 scroll-mt-24 border-b border-[var(--border-normal)] pb-2 text-2xl font-semibold leading-tight text-[var(--text-title)]",
+  3: "mb-3 mt-6 scroll-mt-24 text-xl font-semibold leading-snug text-[var(--text-title)]",
 };
 
 export default function ArticleDemo() {
@@ -25,14 +25,12 @@ export default function ArticleDemo() {
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState("");
 
-  // 给标题生成 id
   const components = useMemo(() => {
     const createHeading =
       (level: 1 | 2 | 3) =>
       ({ children }: { children?: React.ReactNode }) => {
         const text = React.Children.toArray(children).join("");
         const id = slugify(String(text));
-
         const Tag = `h${level}` as "h1" | "h2" | "h3";
 
         return (
@@ -47,13 +45,17 @@ export default function ArticleDemo() {
       h2: createHeading(2),
       h3: createHeading(3),
       p: ({ children }: { children?: React.ReactNode }) => (
-        <p className="mb-4 leading-8 text-gray-700">{children}</p>
+        <p className="mb-4 leading-8 text-[var(--text-strong)]">{children}</p>
       ),
       ul: ({ children }: { children?: React.ReactNode }) => (
-        <ul className="mb-4 list-disc pl-6 text-gray-700">{children}</ul>
+        <ul className="mb-4 list-disc pl-6 text-[var(--text-strong)]">
+          {children}
+        </ul>
       ),
       ol: ({ children }: { children?: React.ReactNode }) => (
-        <ol className="mb-4 list-decimal pl-6 text-gray-700">{children}</ol>
+        <ol className="mb-4 list-decimal pl-6 text-[var(--text-strong)]">
+          {children}
+        </ol>
       ),
       code: ({
         inline,
@@ -63,23 +65,21 @@ export default function ArticleDemo() {
         children?: React.ReactNode;
       }) =>
         inline ? (
-          <code className="rounded bg-gray-100 px-1 py-0.5 text-sm">
+          <code className="rounded bg-[var(--card-bg-soft)] px-1 py-0.5 text-sm text-[var(--text-title)]">
             {children}
           </code>
         ) : (
-          <code className="block overflow-x-auto rounded-xl bg-gray-900 p-4 text-sm text-white">
+          <code className="block overflow-x-auto rounded-xl bg-[var(--article-code-bg)] p-4 text-sm text-[var(--article-code-text)]">
             {children}
           </code>
         ),
     };
   }, []);
 
-  // 渲染后扫描 h1 h2 h3 生成目录
   useEffect(() => {
     if (!articleRef.current) return;
 
     const headings = articleRef.current.querySelectorAll("h1, h2, h3");
-
     const tocData: TocItem[] = Array.from(headings).map((heading) => ({
       id: heading.id,
       text: heading.textContent || "",
@@ -92,7 +92,6 @@ export default function ArticleDemo() {
     }
   }, []);
 
-  // 滚动时高亮当前目录
   useEffect(() => {
     if (!articleRef.current) return;
 
@@ -137,21 +136,18 @@ export default function ArticleDemo() {
   return (
     <div className="mx-auto flex max-w-[1200px] gap-8 px-6 py-10">
       <main className="min-w-0 flex-1">
-        <header className="mb-8 border-b border-gray-200 pb-6">
-          <h1 className="mb-3 text-3xl font-bold text-gray-900">
+        <header className="mb-8 border-b border-[var(--border-normal)] pb-6">
+          <h1 className="mb-3 text-3xl font-bold text-[var(--text-title)]">
             React 性能优化
           </h1>
-          <div className="flex flex-wrap gap-3 text-sm text-gray-500">
+          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-sub)]">
             <span>2026-04-23</span>
             <span>React</span>
             <span>性能优化</span>
           </div>
         </header>
 
-        <article
-          ref={articleRef}
-          className="max-w-[780px] prose prose-neutral !max-w-none"
-        >
+        <article ref={articleRef} className="max-w-[780px] prose !max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
             {demoMarkdown}
           </ReactMarkdown>

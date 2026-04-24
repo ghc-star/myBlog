@@ -10,9 +10,9 @@ function Hero() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="mb-6 text-sm tracking-[0.25em] text-gray-500 uppercase"
+          className="mb-6 text-sm uppercase tracking-[0.25em] text-[var(--text-sub)]"
         >
-          Developer · Builder · Explorer
+          Developer 路 Builder 路 Explorer
         </motion.p>
 
         <div>
@@ -38,10 +38,11 @@ function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.6 }}
-          className="mb-8 text-2xl text-gray-500 my-4"
+          className="my-4 mb-8 text-2xl text-[var(--text-sub)]"
         >
           MyBlog
         </motion.p>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +62,7 @@ function Hero() {
                 delay: 1.5 + index * 0.15,
                 duration: 0.4,
               }}
-              className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm text-blue-600"
+              className="rounded-full border border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-4 py-1.5 text-sm text-[var(--theme-accent)]"
             >
               {tag}
             </motion.span>
@@ -75,7 +76,7 @@ function Hero() {
         transition={{ delay: 3, duration: 1 }}
         className="absolute bottom-6 -translate-x-8 flex flex-col items-center gap-2"
       >
-        <span className="text-xs tracking-widest text-gray-400 uppercase">
+        <span className="text-xs uppercase tracking-widest text-[var(--text-faint)]">
           Scroll
         </span>
 
@@ -85,7 +86,7 @@ function Hero() {
             duration: 2,
             repeat: Infinity,
           }}
-          className="flex h-8 w-5 justify-center rounded-full border-2 border-gray-300 pt-1.5"
+          className="flex h-8 w-5 justify-center rounded-full border-2 border-[var(--border-normal)] pt-1.5"
         >
           <motion.div
             animate={{ y: [0, 6, 0] }}
@@ -93,11 +94,12 @@ function Hero() {
               duration: 1.5,
               repeat: Infinity,
             }}
-            className="h-1 w-1 rounded-full bg-gray-400"
+            className="h-1 w-1 rounded-full bg-[var(--text-faint)]"
           />
         </motion.div>
       </motion.div>
     </section>
   );
 }
+
 export default Hero;

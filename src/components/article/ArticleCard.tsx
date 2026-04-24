@@ -1,4 +1,4 @@
-﻿import type { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import type { Article } from "../../types/article";
 
 interface Props {
@@ -28,17 +28,15 @@ function toRgba(color: string, alpha: number) {
 
 function ArticleCard({ article }: Props) {
   const cardAccentSoft = toRgba(article.category.color, 0.35);
-  const cardSoftShadowColor = toRgba(article.category.color, 0.12);
   const cardShadowColor = toRgba(article.category.color, 0.28);
 
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl border border-gray-200/80 bg-white p-5 [box-shadow:0_1px_2px_0_var(--card-shadow-soft)] transition-all duration-300 hover:-translate-y-1 hover:[border-color:var(--card-accent)] hover:[box-shadow:0_8px_18px_-12px_var(--card-shadow-color)]"
+      className="group relative overflow-hidden rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg)] p-5 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:[border-color:var(--card-accent)] hover:[box-shadow:0_8px_18px_-12px_var(--card-shadow-color)]"
       style={
         {
           "--card-accent": article.category.color,
           "--card-accent-soft": cardAccentSoft,
-          "--card-shadow-soft": cardSoftShadowColor,
           "--card-shadow-color": cardShadowColor,
         } as CSSProperties
       }
@@ -56,7 +54,7 @@ function ArticleCard({ article }: Props) {
           style={{
             display: "inline-block",
             backgroundColor: article.category.color,
-            color: "white",
+            color: "var(--text-inverse)",
             borderRadius: "999px",
             marginTop: "2px",
             height: "24px",
@@ -71,26 +69,30 @@ function ArticleCard({ article }: Props) {
         </span>
       </div>
 
-      <div className="my-3 text-xl font-semibold leading-tight text-gray-800 transition-colors group-hover:[color:var(--card-accent)]">
+      <div className="my-3 text-xl font-semibold leading-tight text-[var(--text-title)] transition-colors group-hover:[color:var(--card-accent)]">
         {article.title}
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
-        <span className="rounded-full bg-gray-50 px-2.5 py-1">
-          <span className="mr-1 text-gray-400">日期</span>
-          <span className="font-medium text-gray-700">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--text-sub)]">
+        <span className="rounded-full bg-[var(--card-bg-soft)] px-2.5 py-1">
+          <span className="mr-1 text-[var(--text-faint)]">日期</span>
+          <span className="font-medium text-[var(--text-strong)]">
             {article.publishedAt}
           </span>
         </span>
 
-        <span className="rounded-full bg-gray-50 px-2.5 py-1">
-          <span className="mr-1 text-gray-400">浏览</span>
-          <span className="font-medium text-gray-700">{article.visits}</span>
+        <span className="rounded-full bg-[var(--card-bg-soft)] px-2.5 py-1">
+          <span className="mr-1 text-[var(--text-faint)]">浏览</span>
+          <span className="font-medium text-[var(--text-strong)]">
+            {article.visits}
+          </span>
         </span>
 
-        <span className="rounded-full bg-gray-50 px-2.5 py-1">
-          <span className="mr-1 text-gray-400">评论</span>
-          <span className="font-medium text-gray-700">{article.comments}</span>
+        <span className="rounded-full bg-[var(--card-bg-soft)] px-2.5 py-1">
+          <span className="mr-1 text-[var(--text-faint)]">评论</span>
+          <span className="font-medium text-[var(--text-strong)]">
+            {article.comments}
+          </span>
         </span>
       </div>
     </div>
