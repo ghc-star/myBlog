@@ -8,6 +8,8 @@ import Search from "../pages/Search";
 import App from "../App";
 import Hero from "../components/layout/Hero";
 import ArticleDemo from "../pages/ArticleDetail";
+import Demo from "../pages/ArticleDetail/demo";
+import content from "../data/demo.md?raw";
 
 function PageLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -67,6 +69,14 @@ export const router = createBrowserRouter([
         element: (
           <PageLayout>
             <ArticleDemo></ArticleDemo>
+          </PageLayout>
+        ),
+      },
+      {
+        path: "page/2",
+        element: (
+          <PageLayout>
+            <Demo content={content}></Demo>
           </PageLayout>
         ),
       },

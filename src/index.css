@@ -1,4 +1,21 @@
 @import "tailwindcss";
+
+:root {
+  --app-bg: #f8fafc;
+  --particle-rgb: 243, 175, 202;
+  --particle-opacity: 0.6;
+  --particle-link-opacity: 0.35;
+  --particle-mouse-link-opacity: 0.9;
+  --button-theme: #000000;
+}
+html[data-theme="dark"] {
+  --app-bg: #0f172a;
+  --particle-rgb: 125, 211, 252;
+  --particle-opacity: 0.5;
+  --particle-link-opacity: 0.25;
+  --particle-mouse-link-opacity: 0.7;
+  --button-theme: #3b82f6;
+}
 html,
 body,
 #root {
@@ -11,7 +28,8 @@ body,
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f8fafc;
+  background: var(--app-bg);
+  transition: background-color 0.35s ease;
 }
 
 html {

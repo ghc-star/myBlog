@@ -14,6 +14,12 @@ function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
+const headingClasses = {
+  1: "mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-gray-900",
+  2: "mb-4 mt-8 scroll-mt-24 border-b border-gray-200 pb-2 text-2xl font-semibold leading-tight text-gray-900",
+  3: "mb-3 mt-6 scroll-mt-24 text-xl font-semibold leading-snug text-gray-900",
+};
+
 export default function ArticleDemo() {
   const articleRef = useRef<HTMLDivElement | null>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
@@ -27,13 +33,10 @@ export default function ArticleDemo() {
         const text = React.Children.toArray(children).join("");
         const id = slugify(String(text));
 
-        const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+        const Tag = `h${level}` as "h1" | "h2" | "h3";
 
         return (
-          <Tag
-            id={id}
-            className="mt-8 mb-4 scroll-mt-24 font-bold text-gray-900"
-          >
+          <Tag id={id} className={headingClasses[level]}>
             {children}
           </Tag>
         );
