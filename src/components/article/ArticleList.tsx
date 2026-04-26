@@ -1,19 +1,34 @@
-import { useMemo, useState } from "react";
-import { articles } from "../../mock/articles";
+import { useEffect, useMemo, useState } from "react";
+import { useArticles } from "../../hooks/useArticles";
 import ArticleCard from "./ArticleCard";
 
 const PAGE_SIZE = 10;
 
 function ArticleList() {
+  const { articles } = useArticles();
   const [currentPage, setCurrentPage] = useState(1);
   const total = articles.length;
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const currentList = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
     const end = start + PAGE_SIZE;
     return articles.slice(start, end);
-  }, [currentPage]);
+  }, [articles, currentPage]);
+
+  if (!articles.length) {
+    return (
+      <div className="rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg)] p-8 text-center text-[var(--text-sub)] shadow-[var(--shadow-card)]">
+        暂时还没有文章
+      </div>
+    );
+  }
 
   const handlePrev = () => {
     if (currentPage > 1) {
@@ -41,9 +56,11 @@ function ArticleList() {
         >
           上一页
         </button>
+
         <span className="text-sm text-[var(--text-sub)]">
           第 {currentPage} / {totalPages} 页
         </span>
+
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}

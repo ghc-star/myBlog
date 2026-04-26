@@ -1,5 +1,6 @@
-import type { CSSProperties } from "react";
+﻿import type { CSSProperties } from "react";
 import type { Article } from "../../types/article";
+import { Link } from "react-router-dom";
 
 interface Props {
   article: Article;
@@ -31,7 +32,9 @@ function ArticleCard({ article }: Props) {
   const cardShadowColor = toRgba(article.category.color, 0.28);
 
   return (
-    <div
+    <Link
+      key={article.id}
+      to={`/articles/${article.slug}`}
       className="group relative overflow-hidden rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg)] p-5 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:[border-color:var(--card-accent)] hover:[box-shadow:0_8px_18px_-12px_var(--card-shadow-color)]"
       style={
         {
@@ -95,7 +98,7 @@ function ArticleCard({ article }: Props) {
           </span>
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

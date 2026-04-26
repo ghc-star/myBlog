@@ -4,10 +4,12 @@ import type { Article } from "../types/article";
 export const articles: Article[] = [
   {
     id: 1,
-    slug: "dfs-and-bfs-beginner-guide",
+    slug: "react-state-and-props",
     title: "dfs和bfs的讲解(新手向)",
-    summary: "用迷宫搜索和树遍历串起 DFS、BFS 的核心思想，配合队列、递归和 visited 数组讲清楚最容易卡住的地方。",
-    content: "DFS 适合沿着一条路径不断深入，BFS 适合按层扩展并求最短步数。本文会从图的建模、邻接表、方向数组和边界判断开始，带你写出可复用的搜索模板。",
+    summary:
+      "用迷宫搜索和树遍历串起 DFS、BFS 的核心思想，配合队列、递归和 visited 数组讲清楚最容易卡住的地方。",
+    content:
+      "DFS 适合沿着一条路径不断深入，BFS 适合按层扩展并求最短步数。本文会从图的建模、邻接表、方向数组和边界判断开始，带你写出可复用的搜索模板。",
     category: {
       name: "算法",
       slug: "algorithm",
@@ -27,8 +29,10 @@ export const articles: Article[] = [
     id: 2,
     slug: "leetcode-hot-100-explained",
     title: "力扣hot100(精讲)",
-    summary: "按数组、链表、二叉树、动态规划几个专题拆解 Hot 100，重点记录题型识别和模板迁移。",
-    content: "Hot 100 不适合死记答案，更适合建立题型索引。本文用高频题带出双指针、滑动窗口、哈希表、递归和状态转移的通用套路。",
+    summary:
+      "按数组、链表、二叉树、动态规划几个专题拆解 Hot 100，重点记录题型识别和模板迁移。",
+    content:
+      "Hot 100 不适合死记答案，更适合建立题型索引。本文用高频题带出双指针、滑动窗口、哈希表、递归和状态转移的通用套路。",
     category: {
       name: "算法",
       slug: "algorithm",
@@ -48,8 +52,10 @@ export const articles: Article[] = [
     id: 3,
     slug: "git-first-clone-remote-push",
     title: "Git 新手第一次使用：克隆、配置远程与首次推送",
-    summary: "从安装后的用户名邮箱配置开始，到 clone、add、commit、push，完整跑通第一次 Git 提交流程。",
-    content: "本文按真实第一次使用 Git 的顺序展开：配置身份、克隆仓库、查看状态、提交文件、绑定远程仓库以及处理首次 push 的常见报错。",
+    summary:
+      "从安装后的用户名邮箱配置开始，到 clone、add、commit、push，完整跑通第一次 Git 提交流程。",
+    content:
+      "本文按真实第一次使用 Git 的顺序展开：配置身份、克隆仓库、查看状态、提交文件、绑定远程仓库以及处理首次 push 的常见报错。",
     category: {
       name: "Git 新手通关指南",
       slug: "git-beginner-guide",
@@ -69,8 +75,10 @@ export const articles: Article[] = [
     id: 4,
     slug: "frontend-learning-roadmap-2026",
     title: "2026 前端学习路线：从 HTML 到工程化",
-    summary: "把前端学习拆成基础语义、CSS 布局、JavaScript、React、TypeScript 和工程化六个阶段。",
-    content: "学习路线最重要的是阶段目标清晰。本文给出每个阶段的关键知识点、练习项目和常见误区，帮助新手减少无效焦虑。",
+    summary:
+      "把前端学习拆成基础语义、CSS 布局、JavaScript、React、TypeScript 和工程化六个阶段。",
+    content:
+      "学习路线最重要的是阶段目标清晰。本文给出每个阶段的关键知识点、练习项目和常见误区，帮助新手减少无效焦虑。",
     category: {
       name: "学习路线",
       slug: "learning-path",
@@ -90,8 +98,10 @@ export const articles: Article[] = [
     id: 5,
     slug: "react-state-and-props",
     title: "React 入门：props、state 和组件拆分",
-    summary: "通过一个文章列表页面理解组件通信、状态更新和列表渲染，避免一上来就陷进复杂概念。",
-    content: "React 的入门关键是把 UI 拆成稳定的组件边界。本文从静态结构开始，逐步加入 props、state、事件和条件渲染。",
+    summary:
+      "通过一个文章列表页面理解组件通信、状态更新和列表渲染，避免一上来就陷进复杂概念。",
+    content:
+      "React 的入门关键是把 UI 拆成稳定的组件边界。本文从静态结构开始，逐步加入 props、state、事件和条件渲染。",
     category: {
       name: "web开发",
       slug: "web-development",
@@ -112,7 +122,8 @@ export const articles: Article[] = [
     slug: "campus-oj-problem-model-design",
     title: "校园OJ开发：题目模型和测试点设计",
     summary: "整理 OJ 题目表、测试点、样例输入输出和难度标签的基础数据模型。",
-    content: "一个好维护的 OJ 系统需要先把题目、测试点、提交记录和判题结果拆清楚。本文重点讨论题目模型如何支持多语言、多测试点和样例展示。",
+    content:
+      "一个好维护的 OJ 系统需要先把题目、测试点、提交记录和判题结果拆清楚。本文重点讨论题目模型如何支持多语言、多测试点和样例展示。",
     category: {
       name: "校园OJ开发",
       slug: "campus-oj",
@@ -132,8 +143,10 @@ export const articles: Article[] = [
     id: 7,
     slug: "vite-dev-server-common-errors",
     title: "Vite 启动失败常见问题精讲",
-    summary: "梳理端口占用、依赖缺失、Node 版本不匹配和路径别名错误等高频问题。",
-    content: "开发环境问题通常不是靠猜，而是看报错位置、确认版本和缩小复现范围。本文给出 Vite 项目排查启动失败的步骤清单。",
+    summary:
+      "梳理端口占用、依赖缺失、Node 版本不匹配和路径别名错误等高频问题。",
+    content:
+      "开发环境问题通常不是靠猜，而是看报错位置、确认版本和缩小复现范围。本文给出 Vite 项目排查启动失败的步骤清单。",
     category: {
       name: "开发问题精讲",
       slug: "dev-troubleshooting",
@@ -154,7 +167,8 @@ export const articles: Article[] = [
     slug: "binary-search-template",
     title: "二分查找模板：边界怎么判断才不晕",
     summary: "用左闭右闭和左闭右开两种写法讲清楚 mid、边界收缩和循环条件。",
-    content: "二分查找最容易错在边界。本文用有序数组查找、下界查找和答案二分三个场景总结稳定模板。",
+    content:
+      "二分查找最容易错在边界。本文用有序数组查找、下界查找和答案二分三个场景总结稳定模板。",
     category: {
       name: "算法",
       slug: "algorithm",
@@ -175,7 +189,8 @@ export const articles: Article[] = [
     slug: "git-branch-merge-conflict",
     title: "Git 分支与冲突：merge 前后到底发生了什么",
     summary: "用多人协作场景解释 branch、merge、rebase 和冲突文件的处理流程。",
-    content: "分支不是玄学，而是一条提交指针。本文通过协作开发过程演示如何创建分支、合并代码和解决冲突。",
+    content:
+      "分支不是玄学，而是一条提交指针。本文通过协作开发过程演示如何创建分支、合并代码和解决冲突。",
     category: {
       name: "Git 新手通关指南",
       slug: "git-beginner-guide",
@@ -195,8 +210,10 @@ export const articles: Article[] = [
     id: 10,
     slug: "css-layout-flex-grid",
     title: "CSS 布局入门：Flex 和 Grid 怎么选",
-    summary: "用导航栏、卡片列表和后台页面三个例子说明 Flex 与 Grid 的使用边界。",
-    content: "Flex 更擅长一维排列，Grid 更擅长二维布局。本文通过常见页面结构展示两者如何配合使用。",
+    summary:
+      "用导航栏、卡片列表和后台页面三个例子说明 Flex 与 Grid 的使用边界。",
+    content:
+      "Flex 更擅长一维排列，Grid 更擅长二维布局。本文通过常见页面结构展示两者如何配合使用。",
     category: {
       name: "web开发",
       slug: "web-development",
@@ -217,7 +234,8 @@ export const articles: Article[] = [
     slug: "typescript-basic-types",
     title: "TypeScript 新手必须掌握的类型基础",
     summary: "整理 interface、type、联合类型、泛型和类型收窄的常用写法。",
-    content: "TypeScript 的目标不是把代码写复杂，而是在关键边界提供提示和约束。本文用业务数据模型讲解常用类型能力。",
+    content:
+      "TypeScript 的目标不是把代码写复杂，而是在关键边界提供提示和约束。本文用业务数据模型讲解常用类型能力。",
     category: {
       name: "web开发",
       slug: "web-development",
@@ -238,7 +256,8 @@ export const articles: Article[] = [
     slug: "campus-oj-judge-flow",
     title: "校园OJ开发：一次提交从代码到结果的流程",
     summary: "拆解提交记录、任务队列、编译运行、结果回写和错误信息展示。",
-    content: "判题流程需要把用户提交和实际执行环境隔离开。本文描述从提交代码到返回 AC、WA、TLE、CE 的完整链路。",
+    content:
+      "判题流程需要把用户提交和实际执行环境隔离开。本文描述从提交代码到返回 AC、WA、TLE、CE 的完整链路。",
     category: {
       name: "校园OJ开发",
       slug: "campus-oj",
@@ -259,7 +278,8 @@ export const articles: Article[] = [
     slug: "algorithm-learning-path",
     title: "算法学习路线：先会写模板，再理解变化",
     summary: "给新手规划数组、链表、栈队列、树、图和动态规划的学习顺序。",
-    content: "算法学习不应该一开始就追求难题。本文从基础数据结构出发，安排每个阶段要练的题型和复盘方法。",
+    content:
+      "算法学习不应该一开始就追求难题。本文从基础数据结构出发，安排每个阶段要练的题型和复盘方法。",
     category: {
       name: "学习路线",
       slug: "learning-path",
@@ -280,7 +300,8 @@ export const articles: Article[] = [
     slug: "dynamic-programming-start",
     title: "动态规划入门：状态、转移和初始化",
     summary: "从爬楼梯、打家劫舍到背包问题，建立 DP 的基本思考顺序。",
-    content: "动态规划不是凭感觉列公式，而是先定义状态，再写转移，最后处理初始化和遍历顺序。",
+    content:
+      "动态规划不是凭感觉列公式，而是先定义状态，再写转移，最后处理初始化和遍历顺序。",
     category: {
       name: "算法",
       slug: "algorithm",
@@ -300,8 +321,10 @@ export const articles: Article[] = [
     id: 15,
     slug: "npm-install-error-guide",
     title: "npm install 报错排查：版本、缓存和镜像源",
-    summary: "集中处理依赖安装失败、lockfile 冲突、网络超时和 Node 版本不一致等问题。",
-    content: "依赖安装问题要先区分网络问题、版本问题和包自身问题。本文给出常见错误信息对应的处理办法。",
+    summary:
+      "集中处理依赖安装失败、lockfile 冲突、网络超时和 Node 版本不一致等问题。",
+    content:
+      "依赖安装问题要先区分网络问题、版本问题和包自身问题。本文给出常见错误信息对应的处理办法。",
     category: {
       name: "开发问题精讲",
       slug: "dev-troubleshooting",
@@ -321,8 +344,10 @@ export const articles: Article[] = [
     id: 16,
     slug: "git-commit-message-guide",
     title: "Git 提交信息怎么写：让历史记录更好读",
-    summary: "用 feat、fix、docs、refactor 等类型整理提交信息，让协作时的变更更容易追踪。",
-    content: "好的提交信息能帮你快速理解代码演进。本文介绍常见提交类型、范围写法和实际项目中的提交示例。",
+    summary:
+      "用 feat、fix、docs、refactor 等类型整理提交信息，让协作时的变更更容易追踪。",
+    content:
+      "好的提交信息能帮你快速理解代码演进。本文介绍常见提交类型、范围写法和实际项目中的提交示例。",
     category: {
       name: "Git 新手通关指南",
       slug: "git-beginner-guide",
@@ -343,7 +368,8 @@ export const articles: Article[] = [
     slug: "beginner-project-practice",
     title: "新手项目练习路线：从静态页到可维护应用",
     summary: "按个人主页、博客、待办应用和后台管理四类项目安排练习重点。",
-    content: "项目练习要服务于能力增长。本文给出每类项目应该重点训练的能力，例如组件拆分、数据流、路由、表单和状态管理。",
+    content:
+      "项目练习要服务于能力增长。本文给出每类项目应该重点训练的能力，例如组件拆分、数据流、路由、表单和状态管理。",
     category: {
       name: "学习路线",
       slug: "learning-path",

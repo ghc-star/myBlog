@@ -1,6 +1,6 @@
 import { ToggleLeft, ToggleRight } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import grog from "../../assets/grog.png";
 function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -21,6 +21,7 @@ function ThemeToggle() {
       type="button"
       className="flex items-center justify-between px-5"
       onClick={toggleTheme}
+      style={{ cursor: `url(${grog}),auto` }}
     >
       {theme === "dark" ? (
         <ToggleRight size={25} strokeWidth={1.5} color="var(--button-theme)" />

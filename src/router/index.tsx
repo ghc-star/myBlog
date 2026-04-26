@@ -1,22 +1,15 @@
+import type { ReactNode } from "react";
 import { createBrowserRouter } from "react-router-dom";
-// router/index.tsx 负责统一配置首页、文章详情、归档、分类、搜索、关于和 404 路由。
-
-import Home from "../pages/Home";
-import Archive from "../pages/Archive";
-import Category from "../pages/Category";
-import Search from "../pages/Search";
 import App from "../App";
 import Hero from "../components/layout/Hero";
-import ArticleDemo from "../pages/ArticleDetail";
-import Demo from "../pages/ArticleDetail/demo";
-import content from "../data/demo.md?raw";
+import Archive from "../pages/Archive";
+import ArticleDetailPage from "../pages/ArticleDetailPage";
+import Category from "../pages/Category";
+import Home from "../pages/Home";
+import Search from "../pages/Search";
 
-function PageLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <main className="min-w-0 flex-1 bg-transparent p-6">{children}</main>
-    </>
-  );
+function PageLayout({ children }: { children: ReactNode }) {
+  return <main className="min-w-0 flex-1 bg-transparent p-6">{children}</main>;
 }
 
 export const router = createBrowserRouter([
@@ -44,7 +37,7 @@ export const router = createBrowserRouter([
         path: "about",
         element: (
           <PageLayout>
-            <Hero></Hero>
+            <Hero />
           </PageLayout>
         ),
       },
@@ -65,18 +58,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "page",
+        path: "articles/:slug",
         element: (
           <PageLayout>
-            <ArticleDemo></ArticleDemo>
-          </PageLayout>
-        ),
-      },
-      {
-        path: "page/2",
-        element: (
-          <PageLayout>
-            <Demo content={content}></Demo>
+            <ArticleDetailPage />
           </PageLayout>
         ),
       },

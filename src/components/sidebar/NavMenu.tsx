@@ -1,6 +1,7 @@
 import { Archive, House, Link2, Search, UserRound } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-
+import grog from "../../assets/grog.png";
+import capgrog from "../../assets/capgrog.png";
 const navItems = [
   { name: "首页", path: "/", icon: House },
   { name: "关于", path: "/about", icon: UserRound },
@@ -13,7 +14,10 @@ function NavMenu() {
   const location = useLocation();
 
   return (
-    <div className="w-[220px] px-6 py-8">
+    <div
+      className="w-[220px] px-6 py-8"
+      style={{ cursor: `url(${grog}),auto` }}
+    >
       <ul className="flex flex-col gap-3">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -22,6 +26,7 @@ function NavMenu() {
           return (
             <li key={item.path}>
               <Link
+                style={{ cursor: `url(${capgrog}),auto` }}
                 to={item.path}
                 className={`flex items-center gap-6 text-[16px] transition-colors ${
                   active

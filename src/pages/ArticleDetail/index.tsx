@@ -1,10 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import ArticleToc, {
-  type TocItem,
-} from "../../components/ArticleRight/ArticleToc";
-import { demoMarkdown } from "../../data/demoArticle";
+
+type TocItem = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+type ArticleMarkdownProps = {
+  content: string;
+};
 
 function slugify(text: string) {
   return text
@@ -14,153 +20,260 @@ function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
-const headingClasses = {
-  1: "mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-[var(--text-title)]",
-  2: "mb-4 mt-8 scroll-mt-24 border-b border-[var(--border-normal)] pb-2 text-2xl font-semibold leading-tight text-[var(--text-title)]",
-  3: "mb-3 mt-6 scroll-mt-24 text-xl font-semibold leading-snug text-[var(--text-title)]",
-};
+function normalizeHeadingIds(container: HTMLElement) {
+  const used = new Map<string, number>();
+  const headings = Array.from(
+    container.querySelectorAll<HTMLElement>("h1,h2,h3"),
+  );
 
-export default function ArticleDemo() {
+  headings.forEach((heading) => {
+    const text = heading.textContent || "";
+    const baseId = slugify(text) || "heading";
+    const count = used.get(baseId) || 0;
+    const nextCount = count + 1;
+
+    used.set(baseId, nextCount);
+    heading.id = nextCount === 1 ? baseId : `${baseId}-${nextCount}`;
+  });
+
+  return headings;
+}
+
+export default function Demo({ content }: ArticleMarkdownProps) {
   const articleRef = useRef<HTMLDivElement | null>(null);
+  const tocRef = useRef<HTMLElement | null>(null);
+  const isClickingTocRef = useRef(false);
+
   const [toc, setToc] = useState<TocItem[]>([]);
-  const [activeId, setActiveId] = useState("");
-
-  const components = useMemo(() => {
-    const createHeading =
-      (level: 1 | 2 | 3) =>
-      ({ children }: { children?: React.ReactNode }) => {
-        const text = React.Children.toArray(children).join("");
-        const id = slugify(String(text));
-        const Tag = `h${level}` as "h1" | "h2" | "h3";
-
-        return (
-          <Tag id={id} className={headingClasses[level]}>
-            {children}
-          </Tag>
-        );
-      };
-
-    return {
-      h1: createHeading(1),
-      h2: createHeading(2),
-      h3: createHeading(3),
-      p: ({ children }: { children?: React.ReactNode }) => (
-        <p className="mb-4 leading-8 text-[var(--text-strong)]">{children}</p>
-      ),
-      ul: ({ children }: { children?: React.ReactNode }) => (
-        <ul className="mb-4 list-disc pl-6 text-[var(--text-strong)]">
-          {children}
-        </ul>
-      ),
-      ol: ({ children }: { children?: React.ReactNode }) => (
-        <ol className="mb-4 list-decimal pl-6 text-[var(--text-strong)]">
-          {children}
-        </ol>
-      ),
-      code: ({
-        inline,
-        children,
-      }: {
-        inline?: boolean;
-        children?: React.ReactNode;
-      }) =>
-        inline ? (
-          <code className="rounded bg-[var(--card-bg-soft)] px-1 py-0.5 text-sm text-[var(--text-title)]">
-            {children}
-          </code>
-        ) : (
-          <code className="block overflow-x-auto rounded-xl bg-[var(--article-code-bg)] p-4 text-sm text-[var(--article-code-text)]">
-            {children}
-          </code>
-        ),
-    };
-  }, []);
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
     if (!articleRef.current) return;
 
-    const headings = articleRef.current.querySelectorAll("h1, h2, h3");
-    const tocData: TocItem[] = Array.from(headings).map((heading) => ({
-      id: heading.id,
-      text: heading.textContent || "",
-      level: Number(heading.tagName.charAt(1)),
+    const headings = normalizeHeadingIds(articleRef.current);
+    const list: TocItem[] = headings.map((item) => ({
+      id: item.id,
+      text: item.textContent || "",
+      level: Number(item.tagName[1]),
     }));
 
-    setToc(tocData);
-    if (tocData.length > 0) {
-      setActiveId(tocData[0].id);
+    setToc(list);
+    if (list.length > 0) {
+      setActiveId(list[0].id);
     }
-  }, []);
+  }, [content]);
 
   useEffect(() => {
-    if (!articleRef.current) return;
+    const updateActiveHeading = () => {
+      if (isClickingTocRef.current) return;
+      if (!articleRef.current) return;
 
-    const headings = articleRef.current.querySelectorAll("h1, h2, h3");
-    if (!headings.length) return;
+      const headings = Array.from(
+        articleRef.current.querySelectorAll<HTMLElement>("h1,h2,h3"),
+      );
+      if (!headings.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleHeadings = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              (a.target as HTMLElement).offsetTop -
-              (b.target as HTMLElement).offsetTop,
-          );
+      const offset = 120;
+      const current = [...headings]
+        .reverse()
+        .find((heading) => heading.getBoundingClientRect().top <= offset);
 
-        if (visibleHeadings.length > 0) {
-          setActiveId((visibleHeadings[0].target as HTMLElement).id);
-        }
-      },
-      {
-        rootMargin: "0px 0px -70% 0px",
-        threshold: 0.1,
-      },
+      const nextId = current?.id ?? headings[0].id;
+      setActiveId((prev) => (prev === nextId ? prev : nextId));
+    };
+
+    updateActiveHeading();
+    window.addEventListener("scroll", updateActiveHeading);
+    window.addEventListener("resize", updateActiveHeading);
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveHeading);
+      window.removeEventListener("resize", updateActiveHeading);
+    };
+  }, [content]);
+
+  useEffect(() => {
+    if (!activeId || !tocRef.current) return;
+
+    const container = tocRef.current;
+    const activeItem = container.querySelector<HTMLElement>(
+      `[data-toc-id="${CSS.escape(activeId)}"]`,
     );
+    if (!activeItem) return;
 
-    headings.forEach((heading) => observer.observe(heading));
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const bottomGap = 120;
+    const topGap = 80;
+    const itemBottomToContainerBottom = containerRect.bottom - itemRect.bottom;
+    const itemTopToContainerTop = itemRect.top - containerRect.top;
 
-    return () => observer.disconnect();
-  }, [toc]);
+    if (itemBottomToContainerBottom < bottomGap) {
+      container.scrollTo({
+        top: container.scrollTop + bottomGap - itemBottomToContainerBottom,
+        behavior: "smooth",
+      });
+    }
 
-  const handleTocClick = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
+    if (itemTopToContainerTop < topGap) {
+      container.scrollTo({
+        top: container.scrollTop - (topGap - itemTopToContainerTop),
+        behavior: "smooth",
+      });
+    }
+  }, [activeId]);
 
-    el.scrollIntoView({
+  const handleClick = (id: string) => {
+    isClickingTocRef.current = true;
+    setActiveId(id);
+    document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+    window.setTimeout(() => {
+      isClickingTocRef.current = false;
+    }, 700);
   };
 
   return (
-    <div className="mx-auto flex max-w-[1200px] gap-8 px-6 py-10">
-      <main className="min-w-0 flex-1">
-        <header className="mb-8 border-b border-[var(--border-normal)] pb-6">
-          <h1 className="mb-3 text-3xl font-bold text-[var(--text-title)]">
-            React 性能优化
-          </h1>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-sub)]">
-            <span>2026-04-23</span>
-            <span>React</span>
-            <span>性能优化</span>
-          </div>
-        </header>
-
-        <article ref={articleRef} className="max-w-[780px] prose !max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-            {demoMarkdown}
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        maxWidth: 1200,
+        margin: "0 auto",
+        padding: 24,
+        paddingRight: 284,
+        gap: 40,
+      }}
+    >
+      <div style={{ flex: 1 }}>
+        <div
+          ref={articleRef}
+          className="max-w-[820px] text-[var(--text-strong)]"
+        >
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: ({ children }) => {
+                const text = String(children);
+                const id = slugify(text);
+                return (
+                  <h1
+                    id={id}
+                    className="mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-[var(--text-title)]"
+                  >
+                    {children}
+                  </h1>
+                );
+              },
+              h2: ({ children }) => {
+                const text = String(children);
+                const id = slugify(text);
+                return (
+                  <h2
+                    id={id}
+                    className="mb-4 mt-8 scroll-mt-24 border-b border-[var(--border-normal)] pb-2 text-2xl font-semibold leading-tight text-[var(--text-title)]"
+                  >
+                    {children}
+                  </h2>
+                );
+              },
+              h3: ({ children }) => {
+                const text = String(children);
+                const id = slugify(text);
+                return (
+                  <h3
+                    id={id}
+                    className="mb-3 mt-6 scroll-mt-24 text-xl font-semibold leading-snug text-[var(--text-title)]"
+                  >
+                    {children}
+                  </h3>
+                );
+              },
+              p: ({ children }) => (
+                <p className="mb-4 leading-8 text-[var(--text-strong)]">
+                  {children}
+                </p>
+              ),
+              ul: ({ children }) => (
+                <ul className="mb-4 list-disc space-y-2 pl-6 text-[var(--text-strong)]">
+                  {children}
+                </ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="mb-4 list-decimal space-y-2 pl-6 text-[var(--text-strong)]">
+                  {children}
+                </ol>
+              ),
+              li: ({ children }) => <li className="leading-7">{children}</li>,
+              blockquote: ({ children }) => (
+                <blockquote className="mb-4 border-l-4 border-[var(--theme-accent-border)] bg-[var(--theme-accent-soft)] px-4 py-3 text-[var(--text-strong)]">
+                  {children}
+                </blockquote>
+              ),
+              hr: () => (
+                <hr className="my-8 border-t border-[var(--border-normal)]" />
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold text-[var(--text-title)]">
+                  {children}
+                </strong>
+              ),
+            }}
+          >
+            {content}
           </ReactMarkdown>
-        </article>
-      </main>
-
-      <div className="hidden xl:block">
-        <ArticleToc
-          toc={toc}
-          activeId={activeId}
-          onItemClick={handleTocClick}
-        />
+        </div>
       </div>
+
+      <aside
+        ref={tocRef}
+        style={{
+          width: 220,
+          height: "auto",
+          borderLeft: "1px solid var(--border-normal)",
+          paddingLeft: 16,
+          position: "fixed",
+          top: 24,
+          right: 24,
+          bottom: 24,
+          maxHeight: "calc(100vh - 48px)",
+          overflowY: "auto",
+        }}
+      >
+        <h3
+          style={{
+            marginTop: 0,
+            marginBottom: 16,
+            color: "var(--text-title)",
+          }}
+        >
+          目录
+        </h3>
+        {toc.map((item) => {
+          const isActive = activeId === item.id;
+          return (
+            <div
+              key={item.id}
+              data-toc-id={item.id}
+              onClick={() => handleClick(item.id)}
+              className={`block cursor-pointer text-left text-sm transition-colors ${
+                isActive
+                  ? "font-semibold text-[var(--theme-accent)]"
+                  : "text-[var(--text-sub)] hover:text-[var(--theme-accent)]"
+              }`}
+              style={{
+                marginBottom: 10,
+                paddingLeft: item.level === 1 ? 0 : item.level === 2 ? 12 : 24,
+                fontWeight: isActive ? 600 : 400,
+              }}
+            >
+              {item.text}
+            </div>
+          );
+        })}
+      </aside>
     </div>
   );
 }

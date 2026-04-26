@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --app-bg: #f8fafc;
+  --app-bg: #fffafa;
   --card-bg: #ffffff;
   --card-bg-soft: #f9fafb;
   --card-bg-overlay: rgba(255, 255, 255, 0.78);
