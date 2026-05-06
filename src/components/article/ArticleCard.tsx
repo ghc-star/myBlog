@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
-import type { Article } from "../../types/article";
+import type { Article } from "../../data/articles";
+import { Link } from "react-router-dom";
 
 interface Props {
   article: Article;
@@ -27,15 +28,17 @@ function toRgba(color: string, alpha: number) {
 }
 
 function ArticleCard({ article }: Props) {
-  const cardAccentSoft = toRgba(article.category.color, 0.35);
-  const cardShadowColor = toRgba(article.category.color, 0.28);
+  const cardAccentSoft = toRgba(article.color, 0.35);
+  const cardShadowColor = toRgba(article.color, 0.28);
 
   return (
-    <div
+    <Link
+      key={article.id}
+      to={`/article/${article.id}`}
       className="group relative overflow-hidden rounded-2xl border border-[var(--border-card)] bg-[var(--card-bg)] p-5 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:[border-color:var(--card-accent)] hover:[box-shadow:0_8px_18px_-12px_var(--card-shadow-color)]"
       style={
         {
-          "--card-accent": article.category.color,
+          "--card-accent": article.color,
           "--card-accent-soft": cardAccentSoft,
           "--card-shadow-color": cardShadowColor,
         } as CSSProperties
@@ -53,7 +56,7 @@ function ArticleCard({ article }: Props) {
         <span
           style={{
             display: "inline-block",
-            backgroundColor: article.category.color,
+            backgroundColor: article.color,
             color: "var(--text-inverse)",
             borderRadius: "999px",
             marginTop: "2px",
@@ -65,7 +68,7 @@ function ArticleCard({ article }: Props) {
             fontWeight: 600,
           }}
         >
-          {article.category.name}
+          {article.title}
         </span>
       </div>
 
@@ -95,7 +98,7 @@ function ArticleCard({ article }: Props) {
           </span>
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

@@ -1,30 +1,34 @@
-import { Infinity } from "lucide-react";
-import { archives } from "../../mock/archives";
+import { useState } from "react";
+import blueImage from "@/assets/images/blue.jpg";
+import redImage from "@/assets/images/1.png";
 
 function ArchivePanel() {
-  return (
-    <section className="my-10">
-      <div className="mb-4 flex flex-col gap-1 text-[var(--text-sub)]">
-        <Infinity size={30} strokeWidth={1.6} />
-        <h2 className="text-[21px] font-bold leading-none text-[var(--text-title)]">
-          归档
-        </h2>
-      </div>
+  const [hover, setHover] = useState(false);
 
-      <div className="overflow-hidden rounded-[12px] bg-[var(--card-bg)] shadow-[var(--shadow-card)] ring-1 ring-[var(--ring-soft)]">
-        {archives.map((item) => (
-          <div
-            key={item.year}
-            className="flex h-[50px] items-center justify-between border-t border-[var(--border-normal)] px-5 first:border-t-0"
-          >
-            <span className="text-[18px] tracking-wide text-[var(--text-title)]">
-              {item.year}
-            </span>
-            <span className="text-[18px] font-normal text-[var(--text-sub)]">
-              {item.count}
-            </span>
-          </div>
-        ))}
+  return (
+    <section className="my-10 flex justify-center">
+      <div
+        className="relative w-[400px] h-[200px] rounded-xl shadow-xl overflow-hidden cursor-pointer"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <div
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${
+            hover ? "opacity-0" : "opacity-100"
+          }`}
+          style={{ backgroundImage: `url(${blueImage})` }}
+        />
+
+        <div
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${
+            hover ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ backgroundImage: `url(${redImage})` }}
+        />
+
+        <div className="relative z-10 flex h-full items-center justify-center text-white text-xl font-bold">
+          Archive Panel
+        </div>
       </div>
     </section>
   );

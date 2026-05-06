@@ -6,6 +6,7 @@ const navItems = [
   { name: "关于", path: "/about", icon: UserRound },
   { name: "归档", path: "/archive", icon: Archive },
   { name: "搜索", path: "/search", icon: Search },
+  { name: "随笔", path: "/essay", icon: Search },
   { name: "友链", path: "/friends", icon: Link2 },
 ];
 

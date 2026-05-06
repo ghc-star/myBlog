@@ -8,8 +8,11 @@ import Search from "../pages/Search";
 import App from "../App";
 import Hero from "../components/layout/Hero";
 import ArticleDemo from "../pages/ArticleDetail";
-import Demo from "../pages/ArticleDetail/demo";
-import content from "../data/demo.md?raw";
+import ArchivePage from "../pages/Archive";
+import About from "../pages/About";
+import Echarts from "../echarts";
+import Echartsdoube from "../echarts/doubey";
+import Essays from "../components/essays";
 
 function PageLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -29,6 +32,14 @@ export const router = createBrowserRouter([
         element: (
           <PageLayout>
             <Home />
+          </PageLayout>
+        ),
+      },
+      {
+        path: "me",
+        element: (
+          <PageLayout>
+            <About></About>
           </PageLayout>
         ),
       },
@@ -65,7 +76,15 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "page",
+        path: "essay",
+        element: (
+          <PageLayout>
+            <Essays></Essays>
+          </PageLayout>
+        ),
+      },
+      {
+        path: "/article/:id",
         element: (
           <PageLayout>
             <ArticleDemo></ArticleDemo>
@@ -73,10 +92,22 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "page/2",
+        path: "/archive",
+        element: <ArchivePage />,
+      },
+      {
+        path: "echarts",
         element: (
           <PageLayout>
-            <Demo content={content}></Demo>
+            <Echarts></Echarts>
+          </PageLayout>
+        ),
+      },
+      {
+        path: "echartdoube",
+        element: (
+          <PageLayout>
+            <Echartsdoube></Echartsdoube>
           </PageLayout>
         ),
       },

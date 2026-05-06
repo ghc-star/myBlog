@@ -1,4 +1,7 @@
+import { usePageTitle } from "../../hooks/usePageTitle";
+
 export default function About() {
+  usePageTitle("我的");
   return (
     <section className="relative overflow-hidden rounded-[32px] border border-[var(--border-card)] bg-[var(--card-bg-overlay)] px-10 py-16 shadow-[var(--shadow-card-hover)] backdrop-blur-xl">
       <div className="pointer-events-none absolute inset-0">
@@ -28,7 +31,8 @@ export default function About() {
           className="animate-fade-up mt-6 max-w-2xl text-base leading-8 text-[var(--text-sub)]"
           style={{ animationDelay: "0.4s" }}
         >
-          这里记录前端开发、算法刷题、Node.js 学习过程，也会分享一些项目总结和踩坑笔记。
+          这里记录前端开发、算法刷题、Node.js
+          学习过程，也会分享一些项目总结和踩坑笔记。
         </p>
 
         <div
@@ -48,7 +52,9 @@ export default function About() {
           style={{ animationDelay: "0.7s" }}
         >
           <div className="rounded-2xl bg-[var(--card-bg-overlay)] p-4 shadow-[var(--shadow-card)]">
-            <div className="text-2xl font-bold text-[var(--text-title)]">24</div>
+            <div className="text-2xl font-bold text-[var(--text-title)]">
+              24
+            </div>
             <div className="mt-1 text-sm text-[var(--text-sub)]">文章</div>
           </div>
           <div className="rounded-2xl bg-[var(--card-bg-overlay)] p-4 shadow-[var(--shadow-card)]">

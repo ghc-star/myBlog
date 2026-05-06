@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { articles } from "../../mock/articles";
+// import { articles } from "../../mock/articles";
+import { articles } from "../../data/articles";
 import ArticleCard from "./ArticleCard";
 
 const PAGE_SIZE = 10;

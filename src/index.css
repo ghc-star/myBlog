@@ -26,6 +26,7 @@
   --particle-link-opacity: 0.35;
   --particle-mouse-link-opacity: 0.9;
   --button-theme: #000000;
+  --list-round: #7b8a8b;
 }
 
 html[data-theme="dark"] {
@@ -106,7 +107,7 @@ ul {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 9999;
   pointer-events: none;
 }
 

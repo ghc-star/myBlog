@@ -1,10 +1,17 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useParams } from "react-router-dom";
 import ArticleToc, {
   type TocItem,
 } from "../../components/ArticleRight/ArticleToc";
-import { demoMarkdown } from "../../data/demoArticle";
+import { articles } from "../../data/articles";
 
 function slugify(text: string) {
   return text
@@ -14,6 +21,29 @@ function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
+function normalizeHeadingIds(container: HTMLElement) {
+  const used = new Map<string, number>();
+  const headings = Array.from(
+    container.querySelectorAll<HTMLElement>("h1,h2,h3"),
+  );
+
+  headings.forEach((heading) => {
+    const text = heading.textContent || "";
+    const baseId = slugify(text) || "heading";
+    const count = used.get(baseId) || 0;
+    const nextCount = count + 1;
+
+    used.set(baseId, nextCount);
+    heading.id = nextCount === 1 ? baseId : `${baseId}-${nextCount}`;
+  });
+
+  return headings;
+}
+
+function stripLeadingMarkdownH1(content: string) {
+  return content.replace(/^\s*#\s+.+?(?:\r?\n){1,2}/, "");
+}
+
 const headingClasses = {
   1: "mb-6 mt-2 scroll-mt-24 text-3xl font-bold leading-tight text-[var(--text-title)]",
   2: "mb-4 mt-8 scroll-mt-24 border-b border-[var(--border-normal)] pb-2 text-2xl font-semibold leading-tight text-[var(--text-title)]",
@@ -21,20 +51,41 @@ const headingClasses = {
 };
 
 export default function ArticleDemo() {
+  const { id } = useParams();
   const articleRef = useRef<HTMLDivElement | null>(null);
+  const tocRef = useRef<HTMLDivElement | null>(null);
+  const isTocNavigatingRef = useRef(false);
+  const tocTargetIdRef = useRef("");
+  const tocNavigationTimerRef = useRef<number | null>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState("");
 
-  const components = useMemo(() => {
+  const article = useMemo(() => {
+    return articles.find((item) => item.id === id);
+  }, [id]);
+
+  const renderedContent = useMemo(() => {
+    return article ? stripLeadingMarkdownH1(article.content) : "";
+  }, [article]);
+
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    window.scrollTo(0, 0);
+  }, []);
+
+  const components = useMemo<Components>(() => {
     const createHeading =
       (level: 1 | 2 | 3) =>
       ({ children }: { children?: React.ReactNode }) => {
         const text = React.Children.toArray(children).join("");
-        const id = slugify(String(text));
+        const headingId = slugify(String(text));
         const Tag = `h${level}` as "h1" | "h2" | "h3";
 
         return (
-          <Tag id={id} className={headingClasses[level]}>
+          <Tag id={headingId} className={headingClasses[level]}>
             {children}
           </Tag>
         );
@@ -44,6 +95,11 @@ export default function ArticleDemo() {
       h1: createHeading(1),
       h2: createHeading(2),
       h3: createHeading(3),
+      h4: ({ children }: { children?: React.ReactNode }) => (
+        <h4 className="mb-3 mt-5 text-lg font-semibold leading-snug text-[var(--text-title)]">
+          {children}
+        </h4>
+      ),
       p: ({ children }: { children?: React.ReactNode }) => (
         <p className="mb-4 leading-8 text-[var(--text-strong)]">{children}</p>
       ),
@@ -57,6 +113,27 @@ export default function ArticleDemo() {
           {children}
         </ol>
       ),
+      li: ({ children }: { children?: React.ReactNode }) => (
+        <li className="mb-2 leading-8 marker:text-[var(--theme-accent)]">
+          {children}
+        </li>
+      ),
+      strong: ({ children }: { children?: React.ReactNode }) => (
+        <strong className="font-semibold text-[var(--text-title)]">
+          {children}
+        </strong>
+      ),
+      blockquote: ({ children }: { children?: React.ReactNode }) => (
+        <blockquote className="mb-6 rounded-r-2xl border-l-4 border-[var(--theme-accent)] bg-[var(--card-bg-soft)] px-5 py-3 text-[var(--text-strong)]">
+          {children}
+        </blockquote>
+      ),
+      hr: () => <hr className="my-8 border-[var(--border-normal)]" />,
+      pre: ({ children }: { children?: React.ReactNode }) => (
+        <pre className="mb-6 overflow-x-auto rounded-2xl bg-[var(--article-code-bg)] p-4 text-sm leading-7 text-[var(--article-code-text)]">
+          {children}
+        </pre>
+      ),
       code: ({
         inline,
         children,
@@ -69,9 +146,7 @@ export default function ArticleDemo() {
             {children}
           </code>
         ) : (
-          <code className="block overflow-x-auto rounded-xl bg-[var(--article-code-bg)] p-4 text-sm text-[var(--article-code-text)]">
-            {children}
-          </code>
+          <code className="bg-transparent p-0 text-inherit">{children}</code>
         ),
     };
   }, []);
@@ -79,7 +154,7 @@ export default function ArticleDemo() {
   useEffect(() => {
     if (!articleRef.current) return;
 
-    const headings = articleRef.current.querySelectorAll("h1, h2, h3");
+    const headings = normalizeHeadingIds(articleRef.current);
     const tocData: TocItem[] = Array.from(headings).map((heading) => ({
       id: heading.id,
       text: heading.textContent || "",
@@ -90,77 +165,170 @@ export default function ArticleDemo() {
     if (tocData.length > 0) {
       setActiveId(tocData[0].id);
     }
-  }, []);
+  }, [renderedContent]);
 
   useEffect(() => {
-    if (!articleRef.current) return;
+    const clearTocNavigationTimer = () => {
+      if (tocNavigationTimerRef.current !== null) {
+        window.clearTimeout(tocNavigationTimerRef.current);
+        tocNavigationTimerRef.current = null;
+      }
+    };
 
-    const headings = articleRef.current.querySelectorAll("h1, h2, h3");
-    if (!headings.length) return;
+    const releaseTocNavigation = () => {
+      clearTocNavigationTimer();
+      isTocNavigatingRef.current = false;
+      tocTargetIdRef.current = "";
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleHeadings = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              (a.target as HTMLElement).offsetTop -
-              (b.target as HTMLElement).offsetTop,
+    const scheduleTocNavigationRelease = () => {
+      clearTocNavigationTimer();
+      tocNavigationTimerRef.current = window.setTimeout(() => {
+        releaseTocNavigation();
+      }, 180);
+    };
+
+    const updateActiveHeading = () => {
+      if (!articleRef.current) return;
+
+      if (isTocNavigatingRef.current) {
+        const targetId = tocTargetIdRef.current;
+        const targetElement = targetId
+          ? document.getElementById(targetId)
+          : null;
+
+        if (!targetElement) {
+          releaseTocNavigation();
+        } else {
+          const targetOffset = 120;
+          const distanceToTarget = Math.abs(
+            targetElement.getBoundingClientRect().top - targetOffset,
           );
 
-        if (visibleHeadings.length > 0) {
-          setActiveId((visibleHeadings[0].target as HTMLElement).id);
+          if (distanceToTarget > 12) {
+            scheduleTocNavigationRelease();
+            return;
+          }
+
+          releaseTocNavigation();
         }
-      },
-      {
-        rootMargin: "0px 0px -70% 0px",
-        threshold: 0.1,
-      },
+      }
+
+      const headings = Array.from(
+        articleRef.current.querySelectorAll<HTMLElement>("h1,h2,h3"),
+      );
+      if (!headings.length) return;
+
+      const offset = 120;
+      const current = [...headings]
+        .reverse()
+        .find((heading) => heading.getBoundingClientRect().top <= offset);
+
+      const nextId = current?.id ?? headings[0].id;
+      setActiveId((prev) => (prev === nextId ? prev : nextId));
+    };
+
+    updateActiveHeading();
+    window.addEventListener("scroll", updateActiveHeading);
+    window.addEventListener("resize", updateActiveHeading);
+
+    return () => {
+      clearTocNavigationTimer();
+      window.removeEventListener("scroll", updateActiveHeading);
+      window.removeEventListener("resize", updateActiveHeading);
+    };
+  }, [renderedContent]);
+
+  useEffect(() => {
+    if (!activeId || !tocRef.current) return;
+
+    const container = tocRef.current;
+    const activeItem = container.querySelector<HTMLElement>(
+      `[data-toc-id="${CSS.escape(activeId)}"]`,
     );
+    if (!activeItem) return;
 
-    headings.forEach((heading) => observer.observe(heading));
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const bottomGap = 120;
+    const topGap = 80;
+    const itemBottomToContainerBottom = containerRect.bottom - itemRect.bottom;
+    const itemTopToContainerTop = itemRect.top - containerRect.top;
 
-    return () => observer.disconnect();
-  }, [toc]);
+    if (itemBottomToContainerBottom < bottomGap) {
+      container.scrollTo({
+        top: container.scrollTop + bottomGap - itemBottomToContainerBottom,
+        behavior: "smooth",
+      });
+    }
 
-  const handleTocClick = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
+    if (itemTopToContainerTop < topGap) {
+      container.scrollTo({
+        top: container.scrollTop - (topGap - itemTopToContainerTop),
+        behavior: "smooth",
+      });
+    }
+  }, [activeId]);
 
-    el.scrollIntoView({
+  const handleTocClick = (headingId: string) => {
+    if (tocNavigationTimerRef.current !== null) {
+      window.clearTimeout(tocNavigationTimerRef.current);
+      tocNavigationTimerRef.current = null;
+    }
+
+    isTocNavigatingRef.current = true;
+    tocTargetIdRef.current = headingId;
+    tocNavigationTimerRef.current = window.setTimeout(() => {
+      isTocNavigatingRef.current = false;
+      tocTargetIdRef.current = "";
+      tocNavigationTimerRef.current = null;
+    }, 180);
+
+    setActiveId(headingId);
+    const element = document.getElementById(headingId);
+    if (!element) return;
+
+    element.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   };
 
+  if (!article) {
+    return <div>Article not found.</div>;
+  }
+
   return (
-    <div className="mx-auto flex max-w-[1200px] gap-8 px-6 py-10">
-      <main className="min-w-0 flex-1">
+    <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:px-8 min-[900px]:grid-cols-[minmax(0,1fr)_240px] min-[900px]:items-start min-[900px]:py-0">
+      <main className="article-detail-main min-w-0 rounded-3xl border border-[var(--border-normal)] bg-[var(--card-bg)] px-6 py-8 shadow-sm sm:px-8 lg:px-10">
         <header className="mb-8 border-b border-[var(--border-normal)] pb-6">
           <h1 className="mb-3 text-3xl font-bold text-[var(--text-title)]">
-            React 性能优化
+            {article.title}
           </h1>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-sub)]">
-            <span>2026-04-23</span>
-            <span>React</span>
-            <span>性能优化</span>
+            <span>{article.date}</span>
+            <span>{article.category}</span>
+            {article.tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
           </div>
         </header>
 
-        <article ref={articleRef} className="max-w-[780px] prose !max-w-none">
+        <article ref={articleRef} className="min-w-0 w-full prose !max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-            {demoMarkdown}
+            {renderedContent}
           </ReactMarkdown>
         </article>
       </main>
 
-      <div className="hidden xl:block">
+      <aside className="hidden self-start min-[900px]:sticky min-[900px]:top-6 min-[900px]:block">
         <ArticleToc
+          ref={tocRef}
           toc={toc}
           activeId={activeId}
           onItemClick={handleTocClick}
         />
-      </div>
+      </aside>
     </div>
   );
 }

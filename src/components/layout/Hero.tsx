@@ -12,22 +12,23 @@ function Hero() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-6 text-sm uppercase tracking-[0.25em] text-[var(--text-sub)]"
         >
-          Developer 路 Builder 路 Explorer
+          Developer · Builder · Explorer
         </motion.p>
 
-        <div>
+        <div className="flex justify-center gap-1 [perspective:1000px]">
           {name.map((char, index) => (
             <motion.span
-              key={char}
+              key={`${char}-${index}`}
               initial={{ opacity: 0, y: 50, rotateX: -90 }}
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{
                 delay: 0.4 + index * 0.12,
-                duration: 0.6,
                 type: "spring",
-                stiffness: 150,
+                stiffness: 260,
+                damping: 14,
+                mass: 0.9,
               }}
-              className="text-7xl font-bold"
+              className="inline-block text-7xl font-bold will-change-transform"
             >
               {char}
             </motion.span>

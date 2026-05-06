@@ -1,11 +1,21 @@
 import { Search } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function SearchBox() {
   const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = keyword.trim();
+    navigate(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+  };
 
   return (
-    <form className="rounded-[8px] bg-[var(--card-bg)] px-2 py-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--ring-soft)]">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-[8px] bg-[var(--card-bg)] px-2 py-2 shadow-[var(--shadow-card)] ring-1 ring-[var(--ring-soft)]"
+    >
       <label className="flex items-center justify-between gap-4">
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="text-[16px] leading-none text-[var(--text-sub)]">

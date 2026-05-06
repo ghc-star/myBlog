@@ -10,6 +10,16 @@ interface Particle {
   radius: number;
 }
 
+interface BurstParticle {
+  x: number;
+  y: number;
+  speed: number;
+  angle: number;
+  radius: number;
+  color: string;
+  frame: number;
+}
+
 interface MouseState {
   x: number;
   y: number;
@@ -17,14 +27,28 @@ interface MouseState {
   repulseUntil: number;
 }
 
+interface ThemeParticleStyle {
+  particleRgb: string;
+  particleOpacity: number;
+  particleLinkOpacity: number;
+  particleMouseLinkOpacity: number;
+}
+
 function ParticlesBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<Particle[]>([]);
+  const burstParticlesRef = useRef<BurstParticle[]>([]);
   const mouseRef = useRef<MouseState>({
     x: 0,
     y: 0,
     active: false,
     repulseUntil: 0,
+  });
+  const themeStyleRef = useRef<ThemeParticleStyle>({
+    particleRgb: "243, 175, 202",
+    particleOpacity: 0.6,
+    particleLinkOpacity: 0.35,
+    particleMouseLinkOpacity: 0.9,
   });
 
   useEffect(() => {
@@ -34,37 +58,9 @@ function ParticlesBackground() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    const rootStyles = getComputedStyle(document.documentElement);
-
-    const particleRgb =
-      rootStyles.getPropertyValue("--particle-rgb").trim() || "243, 175, 202";
-
-    const particleOpacity = Number.parseFloat(
-      rootStyles.getPropertyValue("--particle-opacity"),
-    );
-
-    const particleLinkOpacity = Number.parseFloat(
-      rootStyles.getPropertyValue("--particle-link-opacity"),
-    );
-
-    const particleMouseLinkOpacity = Number.parseFloat(
-      rootStyles.getPropertyValue("--particle-mouse-link-opacity"),
-    );
-
-    const baseParticleOpacity = Number.isNaN(particleOpacity)
-      ? 0.6
-      : particleOpacity;
-
-    const baseParticleLinkOpacity = Number.isNaN(particleLinkOpacity)
-      ? 0.35
-      : particleLinkOpacity;
-
-    const baseParticleMouseLinkOpacity = Number.isNaN(particleMouseLinkOpacity)
-      ? 0.9
-      : particleMouseLinkOpacity;
-
-    // 重点优化 1：降低粒子数量
     const particleCount = window.innerWidth < 768 ? 35 : 90;
+    const burstCount = window.innerWidth < 768 ? 9 : 10;
+    const burstPalette = ["8", "9", "A", "B", "C", "D", "E", "F"];
 
     const linkDistance = 100;
     const mouseLinkDistance = 180;
@@ -79,7 +75,31 @@ function ParticlesBackground() {
     let animationFrame = 0;
     let running = true;
 
-    const particleColor = `rgba(${particleRgb}, ${baseParticleOpacity})`;
+    const updateThemeParticleStyle = () => {
+      const rootStyles = getComputedStyle(document.documentElement);
+      const particleRgb =
+        rootStyles.getPropertyValue("--particle-rgb").trim() || "243, 175, 202";
+      const particleOpacity = Number.parseFloat(
+        rootStyles.getPropertyValue("--particle-opacity"),
+      );
+      const particleLinkOpacity = Number.parseFloat(
+        rootStyles.getPropertyValue("--particle-link-opacity"),
+      );
+      const particleMouseLinkOpacity = Number.parseFloat(
+        rootStyles.getPropertyValue("--particle-mouse-link-opacity"),
+      );
+
+      themeStyleRef.current = {
+        particleRgb,
+        particleOpacity: Number.isNaN(particleOpacity) ? 0.6 : particleOpacity,
+        particleLinkOpacity: Number.isNaN(particleLinkOpacity)
+          ? 0.35
+          : particleLinkOpacity,
+        particleMouseLinkOpacity: Number.isNaN(particleMouseLinkOpacity)
+          ? 0.9
+          : particleMouseLinkOpacity,
+      };
+    };
 
     const createParticles = () => {
       particlesRef.current = Array.from({ length: particleCount }, () => ({
@@ -91,6 +111,32 @@ function ParticlesBackground() {
         impulseY: 0,
         radius: Math.random() * 2 + 1,
       }));
+    };
+
+    const randomArrayValue = <T,>(range: T[]) =>
+      range[Math.floor(range.length * Math.random())];
+
+    const createBurstColor = () =>
+      `#${Array.from({ length: 6 }, () => randomArrayValue(burstPalette)).join("")}`;
+
+    const createBurst = (x: number, y: number) => {
+      const burstParticles = Array.from({ length: burstCount }, () => {
+        const angle = Math.PI - 1 + Math.random() * 2;
+        const speed = 0.5 + Math.random() * 2.2;
+
+        return {
+          x,
+          y,
+          speed,
+          angle,
+          radius: 2,
+          color: createBurstColor(),
+          frame: 0,
+        };
+      });
+
+      burstParticlesRef.current.push(...burstParticles);
+      burstParticlesRef.current = burstParticlesRef.current.slice(-120);
     };
 
     const resize = () => {
@@ -106,7 +152,6 @@ function ParticlesBackground() {
 
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-      // 如果窗口变化很大，可以重新生成粒子
       if (!particlesRef.current.length) {
         createParticles();
       }
@@ -123,12 +168,42 @@ function ParticlesBackground() {
       mouseRef.current.active = false;
     };
 
-    const handleClick = (event: MouseEvent) => {
+    const handleMouseDown = (event: MouseEvent) => {
       const mouse = mouseRef.current;
       mouse.x = event.clientX;
       mouse.y = event.clientY;
       mouse.active = true;
       mouse.repulseUntil = performance.now() + 250;
+      createBurst(event.clientX, event.clientY);
+    };
+
+    const drawBurstParticles = () => {
+      const burstParticles = burstParticlesRef.current;
+      if (!burstParticles.length) return;
+
+      context.save();
+
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const particle = burstParticles[i];
+        particle.x += Math.sin(particle.angle) * particle.speed;
+        particle.y +=
+          Math.cos(particle.angle) * particle.speed + particle.frame * 0.14;
+        particle.frame += 1;
+
+        if (particle.x > width || particle.y > height) {
+          burstParticles.splice(i, 1);
+          continue;
+        }
+
+        context.beginPath();
+        context.fillStyle = particle.color;
+        context.shadowColor = "transparent";
+        context.shadowBlur = 0;
+        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        context.fill();
+      }
+
+      context.restore();
     };
 
     const draw = () => {
@@ -137,16 +212,16 @@ function ParticlesBackground() {
       const now = performance.now();
       const mouse = mouseRef.current;
       const particles = particlesRef.current;
+      const themeStyle = themeStyleRef.current;
 
       context.clearRect(0, 0, width, height);
 
-      context.fillStyle = particleColor;
+      context.fillStyle = `rgba(${themeStyle.particleRgb}, ${themeStyle.particleOpacity})`;
       context.lineWidth = 1;
 
       for (let i = 0; i < particles.length; i++) {
         const particle = particles[i];
 
-        // 鼠标排斥，先用平方距离判断，少开平方
         if (mouse.active && now < mouse.repulseUntil) {
           const dx = particle.x - mouse.x;
           const dy = particle.y - mouse.y;
@@ -182,7 +257,6 @@ function ParticlesBackground() {
         context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
         context.fill();
 
-        // 粒子之间连线
         for (let j = i + 1; j < particles.length; j++) {
           const nextParticle = particles[j];
 
@@ -193,17 +267,16 @@ function ParticlesBackground() {
           if (distanceSq < linkDistanceSq) {
             const distance = Math.sqrt(distanceSq);
             const opacity =
-              (1 - distance / linkDistance) * baseParticleLinkOpacity;
+              (1 - distance / linkDistance) * themeStyle.particleLinkOpacity;
 
             context.beginPath();
             context.moveTo(particle.x, particle.y);
             context.lineTo(nextParticle.x, nextParticle.y);
-            context.strokeStyle = `rgba(${particleRgb}, ${opacity})`;
+            context.strokeStyle = `rgba(${themeStyle.particleRgb}, ${opacity})`;
             context.stroke();
           }
         }
 
-        // 鼠标连线
         if (mouse.active) {
           const dx = particle.x - mouse.x;
           const dy = particle.y - mouse.y;
@@ -213,17 +286,18 @@ function ParticlesBackground() {
             const mouseDistance = Math.sqrt(mouseDistanceSq);
             const opacity =
               (1 - mouseDistance / mouseLinkDistance) *
-              baseParticleMouseLinkOpacity;
+              themeStyle.particleMouseLinkOpacity;
 
             context.beginPath();
             context.moveTo(particle.x, particle.y);
             context.lineTo(mouse.x, mouse.y);
-            context.strokeStyle = `rgba(${particleRgb}, ${opacity})`;
+            context.strokeStyle = `rgba(${themeStyle.particleRgb}, ${opacity})`;
             context.stroke();
           }
         }
       }
 
+      drawBurstParticles();
       animationFrame = requestAnimationFrame(draw);
     };
 
@@ -238,17 +312,27 @@ function ParticlesBackground() {
     };
 
     resize();
+    updateThemeParticleStyle();
 
     if (!particlesRef.current.length) {
       createParticles();
     }
+
+    const themeObserver = new MutationObserver(() => {
+      updateThemeParticleStyle();
+    });
+
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
     animationFrame = requestAnimationFrame(draw);
 
     window.addEventListener("resize", resize);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("click", handleClick);
+    window.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
@@ -257,8 +341,9 @@ function ParticlesBackground() {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("click", handleClick);
+      window.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      themeObserver.disconnect();
 
       cancelAnimationFrame(animationFrame);
     };
