@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { articles } from "../../data/articles";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 function getYear(date: string) {
   return new Date(date).getFullYear();
@@ -17,6 +18,7 @@ function getDayText(date: string) {
   return `${month}-${day}`;
 }
 export default function ArchivePage() {
+  usePageTitle("归档");
   const sortedArticles = [...articles].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
@@ -44,7 +46,7 @@ export default function ArchivePage() {
 
   return (
     <main className="mx-auto w-full max-w-[900px] px-4 py-10 sm:px-6 lg:px-8">
-      <section className="rounded-3xl border border-[var(--border-normal)] bg-[var(--card-bg)] px-6 py-8 shadow-sm sm:px-8">
+      <section className="rounded-md border border-[var(--border-normal)] px-6 py-8 shadow-sm sm:px-8">
         <header className="mb-8">
           <h1 className="mb-2 text-3xl font-bold text-[var(--text-title)]">
             文章归档
@@ -66,9 +68,9 @@ export default function ArchivePage() {
                 className="border-l border-[var(--border-normal)] pl-6"
               >
                 <div className="relative mb-1">
-                  <span className="absolute -left-[27px] top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-[var(--list-round)]" />
+                  <span className="absolute top-1/2 -left-[27px] h-1 w-1 -translate-y-1/2 rounded-full bg-[var(--list-round)]" />
 
-                  <h2 className="text-2xl px-1 font-bold text-[var(--text-title)]">
+                  <h2 className="px-1 text-2xl font-bold text-[var(--text-title)]">
                     {year}
                   </h2>
                 </div>
@@ -79,17 +81,17 @@ export default function ArchivePage() {
                       <ul className="space-y-0">
                         {archiveMap[year][month].map((article) => (
                           <li key={article.id} className="group relative">
-                            <span className="absolute -left-[27px] top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-[var(--list-round)]" />
+                            <span className="absolute top-1/2 -left-[27px] h-1 w-1 -translate-y-1/2 rounded-full bg-[var(--list-round)]" />
 
                             <Link
                               to={`/article/${article.id}`}
-                              className="flex items-center gap-3 rounded-2xl px-1 py-3 transition hover:bg-[var(--card-bg-soft)] "
+                              className="flex items-center gap-3 rounded-2xl px-1 py-3 transition hover:bg-[var(--card-bg-soft)]"
                             >
-                              <span className="text-xs text-[var(--text-sub)] ">
+                              <span className="text-xs text-[var(--text-sub)]">
                                 {getDayText(article.date)}
                               </span>
                               <div>
-                                <h4 className="font-medium text-[var(--text-title)] text-xs transition group-hover:text-[var(--theme-accent)]">
+                                <h4 className="text-xs font-medium text-[var(--text-title)] transition group-hover:text-[var(--theme-accent)]">
                                   {article.title}
                                 </h4>
                               </div>

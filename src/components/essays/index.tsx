@@ -1,6 +1,8 @@
 import essayImage from "@/assets/images/essay.png";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 function Essays() {
+  usePageTitle("随笔");
   return (
     <>
       <header
@@ -16,7 +18,7 @@ function Essays() {
 
       <main
         className={[
-          "relative -mt-10 min-h-screen overflow-visible px-15 pb-20",
+          "relative -mt-10 min-h-screen overflow-visible px-4 pb-12 sm:px-6 md:px-10 lg:px-15",
           "bg-[linear-gradient(to_right,rgba(0,0,0,0.04)_1px,transparent_1px)]",
           "bg-[size:48px_48px]",
         ].join(" ")}
@@ -37,7 +39,7 @@ function Essays() {
         {/* 内容卡片 */}
         <section
           className={[
-            "relative z-10 mx-auto max-w-[1250px] rounded-xl bg-white px-10 py-4",
+            "relative z-10 mx-auto max-w-[1250px] rounded-xl bg-[var(--card-bg)] px-10 py-4",
             "shadow-[0_8px_30px_rgba(0,0,0,0.08)]",
           ].join(" ")}
         >
@@ -52,8 +54,8 @@ function Essays() {
 
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-slate-600">Sara</h2>
-                  <span className="rounded bg-red-500 px-1.5 py-0.5 text-xs text-white">
+                  <h2 className="text-lg font-semibold">Sara</h2>
+                  <span className="rounded bg-red-500 px-1.5 py-0.5 text-xs text-[var(--card-bg)]">
                     LV6
                   </span>
                   <span className="rounded border border-green-400 px-2 py-0.5 text-xs text-green-600">
@@ -61,12 +63,14 @@ function Essays() {
                   </span>
                 </div>
 
-                <p className="mt-4 text-lg text-gray-800">终究还是长大了...</p>
+                <p className="mt-4 text-lg text-[var(--text-title)]">
+                  终究还是长大了...
+                </p>
 
                 <img
                   src={essayImage}
                   alt=""
-                  className="mt-5 w-[430px] rounded-md object-cover"
+                  className="mt-5 w-full max-w-[430px] rounded-md object-cover"
                 />
 
                 <div className="mt-8 flex items-center justify-between text-sm text-gray-500">

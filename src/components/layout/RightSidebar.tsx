@@ -5,7 +5,7 @@ import SearchBox from "../sidebar/SearchBox";
 // RightSidebar 是右侧栏组件，负责展示搜索、归档、分类、标签和推荐文章等模块。
 function RightSidebar() {
   return (
-    <aside className="no-scrollbar fixed top-6 right-6 bottom-6 w-[240px] shrink-0 overflow-y-auto p-4">
+    <aside className="hidden lg:fixed lg:right-6 lg:top-6 lg:bottom-6 lg:block lg:w-[240px] lg:overflow-y-auto lg:p-4">
       <SearchBox></SearchBox>
       <ArchivePanel></ArchivePanel>
       <CategoryPanel></CategoryPanel>

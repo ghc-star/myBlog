@@ -2,9 +2,11 @@ import { useSearchParams } from "react-router-dom";
 import { useSearch } from "../../hooks/useSearch";
 import ArticleCard from "../../components/article/ArticleCard";
 import SearchBox from "../../components/sidebar/SearchBox";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 // Search 是搜索结果页组件，负责根据关键字展示过滤后的文章列表。
 export default function Search() {
+  usePageTitle("搜索");
   const [searchParams] = useSearchParams();
   console.log(searchParams);
 
@@ -21,7 +23,7 @@ export default function Search() {
           关键词“{keyword}”，共 {results.length} 条结果
         </p>
       ) : (
-        <p className="mb-6 text-[var(--text-sub)]">请输入关键词开始搜索</p>
+        <></>
       )}
 
       <div className="grid gap-4">

@@ -3,7 +3,7 @@ import RightSidebar from "./RightSidebar";
 
 function MainLayout() {
   return (
-    <div className="flex min-h-screen bg-transparent pr-[264px] text-[var(--text-main)]">
+    <div className="flex min-h-screen bg-transparent text-[var(--text-main)] lg:pr-[264px]">
       <ContentArea />
       <RightSidebar />
     </div>

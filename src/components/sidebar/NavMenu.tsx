@@ -10,11 +10,11 @@ const navItems = [
   { name: "友链", path: "/friends", icon: Link2 },
 ];
 
-function NavMenu() {
+function NavMenu({ onItemClick }: { onItemClick?: () => void }) {
   const location = useLocation();
 
   return (
-    <div className="w-[220px] px-6 py-8">
+    <div className="w-full px-0 py-4 sm:w-[220px] sm:px-6 sm:py-8">
       <ul className="flex flex-col gap-3">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -24,7 +24,8 @@ function NavMenu() {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className={`flex items-center gap-6 text-[16px] transition-colors ${
+                onClick={onItemClick}
+                className={`flex items-center gap-3 text-sm transition-colors sm:gap-6 sm:text-[16px] transition-all duration-300 ${
                   active
                     ? "font-semibold text-[var(--text-strong)]"
                     : "text-[var(--text-sub)] hover:text-[var(--text-title)]"

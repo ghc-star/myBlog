@@ -5,14 +5,14 @@ export default function About() {
   return (
     <section className="relative overflow-hidden rounded-[32px] border border-[var(--border-card)] bg-[var(--card-bg-overlay)] px-10 py-16 shadow-[var(--shadow-card-hover)] backdrop-blur-xl">
       <div className="pointer-events-none absolute inset-0">
-        <div className="animate-blob absolute -left-16 top-10 h-56 w-56 rounded-full bg-sky-300/30 blur-3xl" />
+        <div className="animate-blob absolute top-10 -left-16 h-56 w-56 rounded-full bg-sky-300/30 blur-3xl" />
         <div
-          className="animate-blob absolute right-0 top-0 h-64 w-64 rounded-full bg-violet-300/30 blur-3xl"
+          className="animate-blob absolute top-0 right-0 h-64 w-64 rounded-full bg-violet-300/30 blur-3xl"
           style={{ animationDelay: "1.5s" }}
         />
       </div>
 
-      <div className="relative z-10 animate-fade-in">
+      <div className="animate-fade-in relative z-10">
         <p
           className="animate-fade-up text-sm tracking-[0.3em] text-[var(--text-sub)]"
           style={{ animationDelay: "0.1s" }}
@@ -21,7 +21,7 @@ export default function About() {
         </p>
 
         <h1
-          className="animate-fade-up mt-4 text-5xl font-bold leading-tight text-[var(--text-title)]"
+          className="animate-fade-up mt-4 text-5xl leading-tight font-bold text-[var(--text-title)]"
           style={{ animationDelay: "0.25s" }}
         >
           你好，我是你的博客作者

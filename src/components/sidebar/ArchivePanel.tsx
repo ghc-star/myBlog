@@ -8,7 +8,7 @@ function ArchivePanel() {
   return (
     <section className="my-10 flex justify-center">
       <div
-        className="relative w-[400px] h-[200px] rounded-xl shadow-xl overflow-hidden cursor-pointer"
+        className="relative h-40 w-full max-w-[400px] overflow-hidden rounded-xl shadow-xl sm:h-[200px]"
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >

@@ -12,6 +12,7 @@ import ArticleToc, {
   type TocItem,
 } from "../../components/ArticleRight/ArticleToc";
 import { articles } from "../../data/articles";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 function slugify(text: string) {
   return text
@@ -51,6 +52,7 @@ const headingClasses = {
 };
 
 export default function ArticleDemo() {
+  usePageTitle("内容");
   const { id } = useParams();
   const articleRef = useRef<HTMLDivElement | null>(null);
   const tocRef = useRef<HTMLDivElement | null>(null);
@@ -96,7 +98,7 @@ export default function ArticleDemo() {
       h2: createHeading(2),
       h3: createHeading(3),
       h4: ({ children }: { children?: React.ReactNode }) => (
-        <h4 className="mb-3 mt-5 text-lg font-semibold leading-snug text-[var(--text-title)]">
+        <h4 className="mt-5 mb-3 text-lg leading-snug font-semibold text-[var(--text-title)]">
           {children}
         </h4>
       ),
@@ -299,7 +301,7 @@ export default function ArticleDemo() {
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:px-8 min-[900px]:grid-cols-[minmax(0,1fr)_240px] min-[900px]:items-start min-[900px]:py-0">
+    <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-8 px-4 py-8 min-[900px]:grid-cols-[minmax(0,1fr)_240px] min-[900px]:items-start min-[900px]:py-0 sm:px-6 lg:px-8">
       <main className="article-detail-main min-w-0 rounded-3xl border border-[var(--border-normal)] bg-[var(--card-bg)] px-6 py-8 shadow-sm sm:px-8 lg:px-10">
         <header className="mb-8 border-b border-[var(--border-normal)] pb-6">
           <h1 className="mb-3 text-3xl font-bold text-[var(--text-title)]">
@@ -314,7 +316,7 @@ export default function ArticleDemo() {
           </div>
         </header>
 
-        <article ref={articleRef} className="min-w-0 w-full prose !max-w-none">
+        <article ref={articleRef} className="prose w-full !max-w-none min-w-0">
           <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
             {renderedContent}
           </ReactMarkdown>

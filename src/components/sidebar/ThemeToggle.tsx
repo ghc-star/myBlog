@@ -1,5 +1,5 @@
 import { ToggleLeft, ToggleRight } from "lucide-react";
-import { useEffect, useState } from "react";
+
 import { useThemeStore } from "../../store/useThemeStore";
 
 function ThemeToggle() {
@@ -21,15 +21,17 @@ function ThemeToggle() {
   return (
     <button
       type="button"
-      className="flex items-center justify-between px-5"
+      className="flex items-center justify-between px-5 text-sm lg:text-[16px]"
       onClick={toggleTheme}
     >
       {theme === "dark" ? (
-        <ToggleRight size={25} strokeWidth={1.5} color="var(--button-theme)" />
+        <ToggleRight size={20} strokeWidth={1.6} color="var(--button-theme)" />
       ) : (
-        <ToggleLeft size={25} strokeWidth={1.5} color="var(--button-theme)" />
+        <ToggleLeft size={20} strokeWidth={1.6} color="var(--button-theme)" />
       )}
-      <span className="mx-2 select-none text-[var(--text-sub)]">切换主题</span>
+      <span className="mx-2 select-none text-[var(--text-sub)] text-sm lg:text-[16px]">
+        切换主题
+      </span>
     </button>
   );
 }
